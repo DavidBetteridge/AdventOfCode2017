@@ -16,21 +16,19 @@ namespace Solutions
 
         public int ComputeChecksumPart2(string spreadsheet)
         {
+            (int fst, int snd) OrderTuple(int fst, int snd) => (fst: Math.Max(fst, snd), snd: Math.Min(fst, snd));
+
             int GetDivisor(IEnumerable<int> numbers)
             {
-                var orderedNumbers = numbers.OrderBy(a => a).ToList();
+                var divisor = numbers
+                               .SelectMany((fst, i) => numbers.Skip(i + 1).Select(snd => OrderTuple(fst, snd)))
+                               .FirstOrDefault(t => t.fst % t.snd == 0);
 
-                for (int start = 0; start < orderedNumbers.Count() - 1; start++)
-                {
-                    for (int end = start + 1; end < orderedNumbers.Count(); end++)
-                    {
-                        if (orderedNumbers[end] % orderedNumbers[start] == 0)
-                        {
-                            return orderedNumbers[end] / orderedNumbers[start];
-                        }
-                    }
-                }
-                return 0;
+                if (divisor.snd == 0)
+                    return 0;
+                else
+                    return divisor.fst / divisor.snd;
+
             }
 
             return spreadsheet.Split(new[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
