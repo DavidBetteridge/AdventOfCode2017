@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Solutions
 {
@@ -41,15 +42,14 @@ namespace Solutions
 
         public int FindFirstValueBiggerThan(int valueBiggerThan)
         {
-            const int GRIDSIZE = 100;
-            var grid = new int[GRIDSIZE, GRIDSIZE];
-            var offset = GRIDSIZE / 2;
+            var grid = new Dictionary<string, int>();
 
             // Start with a 1 in the centre
             var x = 0;
             var y = 0;
             var length = 1;
-            grid[x + offset, y + offset] = 1;
+
+            grid.Add($"{x},{y}", 1);
 
             while (true)
             {
@@ -58,16 +58,18 @@ namespace Solutions
                 for (int i = 1; i < length; i++)
                 {
                     x++;
-                    grid[x + offset, y + offset] = SumSquares(grid, x + offset, y + offset);
-                    if (grid[x + offset, y + offset] > valueBiggerThan) return grid[x + offset, y + offset];
+                    var total = SumSquares(grid, x, y);
+                    grid.Add($"{x},{y}", total);
+                    if (total > valueBiggerThan) return total;
                 }
 
                 //Walk up
                 for (int i = 1; i < length; i++)
                 {
                     y--;
-                    grid[x + offset, y + offset] = SumSquares(grid, x + offset, y + offset);
-                    if (grid[x + offset, y + offset] > valueBiggerThan) return grid[x + offset, y + offset];
+                    var total = SumSquares(grid, x, y);
+                    grid.Add($"{x},{y}", total);
+                    if (total > valueBiggerThan) return total;
                 }
 
                 //Walk to the left
@@ -75,29 +77,33 @@ namespace Solutions
                 for (int i = 1; i < length; i++)
                 {
                     x--;
-                    grid[x + offset, y + offset] = SumSquares(grid, x + offset, y + offset);
-                    if (grid[x + offset, y + offset] > valueBiggerThan) return grid[x + offset, y + offset];
+                    var total = SumSquares(grid, x, y);
+                    grid.Add($"{x},{y}", total);
+                    if (total > valueBiggerThan) return total;
                 }
 
                 //Walk down
                 for (int i = 1; i < length; i++)
                 {
                     y++;
-                    grid[x + offset, y + offset] = SumSquares(grid, x + offset, y + offset);
-                    if (grid[x + offset, y + offset] > valueBiggerThan) return grid[x + offset, y + offset];
+                    var total = SumSquares(grid, x, y);
+                    grid.Add($"{x},{y}", total);
+                    if (total > valueBiggerThan) return total;
                 }
             }
 
         }
 
-        private int SumSquares(int[,] grid, int xPos, int yPos)
+        private int SumSquares(Dictionary<string, int> grid, int xPos, int yPos)
         {
             var result = 0;
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    result += grid[xPos + x, yPos + y];
+                    var key = $"{xPos + x},{yPos + y}";
+                    grid.TryGetValue(key, out var value);
+                    result += value;
                 }
             }
             return result;
