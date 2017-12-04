@@ -10,7 +10,7 @@ namespace Tests
         [InlineData(12, 3)]
         [InlineData(23, 2)]
         [InlineData(1024, 31)]
-        public void ChecksAnswersToPartA(int square, int expectedResult)
+        public void Part1(int square, int expectedResult)
         {
             var day3 = new Day3();
             var actual = day3.CalculateDistance(square);
@@ -18,18 +18,18 @@ namespace Tests
         }
 
         [Fact]
-        public void SolvePartA()
+        public void Part1Answer()
         {
             var day3 = new Day3();
             var actual = day3.CalculateDistance(277678);
-            Assert.True(true);
+            Assert.Equal(475, actual);
         }
 
         [Theory]
         [InlineData(3, 4)]
         [InlineData(6, 10)]
         [InlineData(800, 806)]
-        public void CheckAnswersForPartB(int valueBiggerThan, int expectedResult)
+        public void Part2(int valueBiggerThan, int expectedResult)
         {
             var day3 = new Day3();
             var actual = day3.FindFirstValueBiggerThan(valueBiggerThan);
@@ -37,11 +37,11 @@ namespace Tests
         }
 
         [Fact]
-        public void SolvePartB()
+        public void Part2Answer()
         {
             var day3 = new Day3();
             var actual = day3.FindFirstValueBiggerThan(277678);
-            Assert.True(true);
+            Assert.Equal(279138,actual);
         }
 
     }

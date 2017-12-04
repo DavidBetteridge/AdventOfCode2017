@@ -9,7 +9,7 @@ namespace Tests
         [InlineData("aa bb cc dd ee", true)]
         [InlineData("aa bb cc dd aa", false)]
         [InlineData("aa bb cc dd aaa", true)]
-        public void Day4Part1(string input, bool expectedResult)
+        public void Part1(string input, bool expectedResult)
         {
             var day4 = new Day4();
             var actualResult = day4.CheckPassPhrase(input);
@@ -17,12 +17,12 @@ namespace Tests
         }
 
         [Fact]
-        public void Day4Part1Answer()
+        public void Part1Answer()
         {
          
             var day4 = new Day4();
             var actualResult = day4.CountValidPassPhrases(TEST_INPUT);
-            Assert.True(true);
+            Assert.Equal(466,actualResult);
         }
 
         [Theory]
@@ -31,7 +31,7 @@ namespace Tests
         [InlineData("a ab abc abd abf abj", true)]
         [InlineData("iiii oiii ooii oooi oooo", true)]
         [InlineData("oiii ioii iioi iiio", false)]
-        public void Day4Part2(string input, bool expectedResult)
+        public void Part2(string input, bool expectedResult)
         {
             var day4 = new Day4();
             var actualResult = day4.CheckPassPhraseWithExtraRules(input);
@@ -39,11 +39,11 @@ namespace Tests
         }
 
         [Fact]
-        public void Day4Part2Answer()
+        public void Part2Answer()
         {
             var day4 = new Day4();
             var actualResult = day4.CountValidPassPhrasesWithExtraRules(TEST_INPUT);
-            Assert.True(true);
+            Assert.Equal(251, actualResult);
         }
 
         private const string TEST_INPUT = @"pphsv ojtou brvhsj cer ntfhlra udeh ccgtyzc zoyzmh jum lugbnk
