@@ -35,6 +35,25 @@ namespace Tests
             var day6 = new Day6();
             var actual = day6.RepeatsAfter(TEST_DATA);
 
+            Assert.Equal(11137, actual);
+        }
+
+        [Theory]
+        [InlineData("0 2 7 0", 4)]
+        public void Part2(string given, int expect)
+        {
+            var day6 = new Day6();
+            var actual = day6.NumberOfCycles(given);
+
+            Assert.Equal(expect, actual);
+        }
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day6 = new Day6();
+            var actual = day6.NumberOfCycles(TEST_DATA);
+
             Assert.Equal(100, actual);
         }
 

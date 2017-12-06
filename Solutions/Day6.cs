@@ -54,6 +54,22 @@ namespace Solutions
             return string.Join(" ", numbers);
         }
 
+        public int NumberOfCycles(string given)
+        {
+            var seen = new Dictionary<string, int>();
+            var currentPattern = given;
+            var result = 0;
+
+            while (!seen.ContainsKey(currentPattern))
+            {
+                seen.Add(currentPattern, result);
+                result++;
+                currentPattern = NextIteration(currentPattern);
+            }
+
+            return result - seen[currentPattern];
+        }
+
         public int RepeatsAfter(string given)
         {
             var seen = new HashSet<string>();
