@@ -8,13 +8,9 @@ namespace Solutions
         public int CalculateDistance(int square)
         {
             // Work out which layer on the square holds our value
-            var max = 1;
-            var height = 1;
-            while (square > max)
-            {
-                height += 2;
-                max = height * height;
-            }
+            var height = (int)(Math.Ceiling(Math.Sqrt(square)));
+            if (height % 2 == 0) height++;
+            var max = height * height;
 
             // Work out which side of the square
             var midOffset = (height - 1) / 2;
