@@ -47,50 +47,17 @@ namespace Solutions
             // Start with a 1 in the centre
             var x = 0;
             var y = 0;
-            var length = 1;
-
             grid.Add($"{x},{y}", 1);
 
-            while (true)
+            foreach (var moveInDirection in Directions())
             {
-                //Walk to the right
-                length++;
-                for (int i = 1; i < length; i++)
-                {
-                    x++;
-                    var total = SumSquares(grid, x, y);
-                    grid.Add($"{x},{y}", total);
-                    if (total > valueBiggerThan) return total;
-                }
-
-                //Walk up
-                for (int i = 1; i < length; i++)
-                {
-                    y--;
-                    var total = SumSquares(grid, x, y);
-                    grid.Add($"{x},{y}", total);
-                    if (total > valueBiggerThan) return total;
-                }
-
-                //Walk to the left
-                length += 1;
-                for (int i = 1; i < length; i++)
-                {
-                    x--;
-                    var total = SumSquares(grid, x, y);
-                    grid.Add($"{x},{y}", total);
-                    if (total > valueBiggerThan) return total;
-                }
-
-                //Walk down
-                for (int i = 1; i < length; i++)
-                {
-                    y++;
-                    var total = SumSquares(grid, x, y);
-                    grid.Add($"{x},{y}", total);
-                    if (total > valueBiggerThan) return total;
-                }
+                (x, y) = Walk(x, y, moveInDirection);
+                var total = SumSquares(grid, x, y);
+                grid.Add($"{x},{y}", total);
+                if (total > valueBiggerThan) return total;
             }
+
+            return 0;
 
         }
 
@@ -108,5 +75,61 @@ namespace Solutions
             }
             return result;
         }
+
+
+        private (int newX, int newY) Walk(int currentX, int currentY, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    return (currentX, currentY - 1);
+                case Direction.Down:
+                    return (currentX, currentY + 1);
+                case Direction.East:
+                    return (currentX + 1, currentY);
+                case Direction.West:
+                    return (currentX - 1, currentY);
+                default:
+                    throw new Exception("Unknown direction");
+            }
+        }
+
+        private IEnumerable<Direction> Directions()
+        {
+            var length = 0;
+
+            while (true)
+            {
+                length++;
+                for (int i = 0; i < length; i++)
+                {
+                    yield return Direction.East;
+                }
+
+                for (int i = 0; i < length; i++)
+                {
+                    yield return Direction.Up;
+                }
+
+                length++;
+                for (int i = 0; i < length; i++)
+                {
+                    yield return Direction.West;
+                }
+
+                for (int i = 0; i < length; i++)
+                {
+                    yield return Direction.Down;
+                }
+            }
+        }
+    }
+
+    enum Direction
+    {
+        Up = 1,
+        Down = 2,
+        East = 3,
+        West = 4
     }
 }
