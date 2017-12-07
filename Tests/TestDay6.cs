@@ -19,23 +19,22 @@ namespace Tests
             Assert.Equal(expect, actual);
         }
 
-        [Theory]
-        [InlineData("0 2 7 0", 5)]
-        public void Part1(string given, int expect)
+        [Fact]
+        public void Part1()
         {
             var day6 = new Day6();
-            var actual = day6.RepeatsAfter(given);
+            var (repeatsAfter, _) = day6.FindLoop("0 2 7 0");
 
-            Assert.Equal(expect, actual);
+            Assert.Equal(5, repeatsAfter);
         }
 
         [Fact]
         public void Part1_Answer()
         {
             var day6 = new Day6();
-            var actual = day6.RepeatsAfter(TEST_DATA);
+            var (repeatsAfter, _) = day6.FindLoop(TEST_DATA);
 
-            Assert.Equal(11137, actual);
+            Assert.Equal(11137, repeatsAfter);
         }
 
         [Theory]
@@ -43,18 +42,18 @@ namespace Tests
         public void Part2(string given, int expect)
         {
             var day6 = new Day6();
-            var actual = day6.NumberOfCycles(given);
+            var (_, sizeOfLoop) = day6.FindLoop(given);
 
-            Assert.Equal(expect, actual);
+            Assert.Equal(expect, sizeOfLoop);
         }
 
         [Fact]
         public void Part2_Answer()
         {
             var day6 = new Day6();
-            var actual = day6.NumberOfCycles(TEST_DATA);
+            var (_, sizeOfLoop) = day6.FindLoop(TEST_DATA);
 
-            Assert.Equal(100, actual);
+            Assert.Equal(1037, sizeOfLoop);
         }
 
         private const string TEST_DATA = @"14 0 15 12 11 11 3 5 1 6 8 4 9 1 8 4";
