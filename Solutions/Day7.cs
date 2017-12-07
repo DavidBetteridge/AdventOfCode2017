@@ -19,23 +19,30 @@ namespace Solutions
             foreach (var line in lines)
             {
                 var name = line.Substring(0, line.IndexOf(' '));
+                var children = line.Substring(line.IndexOf("->") + 2).Split(new[] { ", " }, System.StringSplitOptions.RemoveEmptyEntries);
 
                 var s = line.IndexOf('(') + 1;
                 var weight = line.Substring(s, line.IndexOf(')') - s);
-                var newNode = new Node() { Name = name, Children = new List<Node>(),  Weight= int.Parse(weight) };
-                nodes.Add(name, newNode);
-            }
 
-            foreach (var line in lines.Where(l => l.Contains("->")))
-            {
-                var name = line.Substring(0, line.IndexOf(' '));
-                var children = line.Substring(line.IndexOf("->") + 2).Split(new[] { ", " }, System.StringSplitOptions.RemoveEmptyEntries);
-                var thisNode = nodes[name];
+                if (!nodes.TryGetValue(name, out var newNode))
+                {
+                    newNode = new Node(name);
+                    nodes.Add(name, newNode);
+                }
+                newNode.Weight = int.Parse(weight);
+
+                // Now add it's children
                 foreach (var child in children)
                 {
-                    var childNode = nodes[child.Trim()];
-                    childNode.Parent = thisNode;
-                    thisNode.Children.Add(childNode);
+                    var childName = child.Trim();
+                    if (!nodes.TryGetValue(childName, out var childNode))
+                    {
+                        childNode = new Node(childName);
+                        nodes.Add(childName, childNode);
+                    }
+
+                    childNode.Parent = newNode;
+                    newNode.Children.Add(childNode);
                 }
             }
 
@@ -55,7 +62,7 @@ namespace Solutions
 
             return CalculateWeights(rootNode);
         }
- 
+
 
         private int CalculateWeights(Node node)
         {
@@ -85,13 +92,19 @@ namespace Solutions
 
         private class Node
         {
-            public string Name { get; set; }
+            public string Name { get; }
             public int Weight { get; set; }
 
             public Node Parent { get; set; }
             public List<Node> Children { get; set; }
 
             public int TotalWeight { get; set; }
+
+            public Node(string name)
+            {
+                this.Name = name;
+                this.Children = new List<Node>();
+            }
         }
     }
 }

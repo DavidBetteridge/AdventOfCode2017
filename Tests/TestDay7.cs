@@ -70,7 +70,7 @@ cntj (57)";
             var day7 = new Day7();
             var actual = day7.FindIdealWeight(TEST_INPUT);
 
-            Assert.Equal(0, actual);
+            Assert.Equal(1226, actual);
         }
 
 
