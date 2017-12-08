@@ -111,7 +111,28 @@ c inc -20 if c == 10");
         {
             var day8 = new Day8();
             var actual = day8.FindLargest(TEST_INPUT);
-            Assert.Equal(1, actual);
+            Assert.Equal(6611, actual);
+        }
+
+
+
+        [Fact]
+        public void Part2()
+        {
+            var day8 = new Day8();
+            var actual = day8.FindHighest(@"b inc 5 if a > 1
+a inc 1 if b < 5
+c dec -10 if a >= 1
+c inc -20 if c == 10");
+            Assert.Equal(10, actual);
+        }
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day8 = new Day8();
+            var actual = day8.FindHighest(TEST_INPUT);
+            Assert.Equal(6619, actual);
         }
 
         private const string TEST_INPUT = @"b inc 580 if bkd > -1

@@ -61,6 +61,25 @@ namespace Solutions.Day8
             return registers.Values.Max();
         }
 
+        public int FindHighest(string instructions)
+        {
+            var lines = instructions.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
+            var registers = new Dictionary<string, int>();
+            var highest = 0;
+
+            foreach (var line in lines)
+            {
+                var instruction = Parse(line);
+                if (EvaluateCondition(instruction, registers))
+                {
+                    highest = Math.Max(highest, UpdateRegister(instruction, registers));
+                }
+            }
+
+            return highest;
+        }
+
+
         public bool EvaluateCondition(Instruction instruction, Dictionary<string, int> registers)
         {
             registers.TryGetValue(instruction.ConditionRegister, out var LHS);
@@ -84,13 +103,16 @@ namespace Solutions.Day8
             }
         }
 
-        public void UpdateRegister(Instruction instruction, Dictionary<string, int> registers)
+        public int UpdateRegister(Instruction instruction, Dictionary<string, int> registers)
         {
             var exists = registers.TryGetValue(instruction.Register, out var LHS);
             var sign = instruction.Operation == Operation.Inc ? 1 : -1;
             var newValue = LHS + (sign * instruction.Offset);
             registers[instruction.Register] = newValue;
+            return newValue;
         }
+
+
     }
 
     public class Instruction
