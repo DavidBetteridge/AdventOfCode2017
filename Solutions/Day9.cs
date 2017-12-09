@@ -20,13 +20,13 @@ namespace Solutions
             }
 
 
-            var rootGroup = BuildGroups(stream);
+            var (rootGroup,_) = BuildGroups(stream);
             var result = DoWork(rootGroup);
 
             return result;
         }
 
-        private Group BuildGroups(string stream)
+        private (Group,int) BuildGroups(string stream)
         {
             var groups = new Stack<Group>();
             var rootGroup = new Group();
@@ -34,6 +34,7 @@ namespace Solutions
 
             var inGarbage = false;
             var inCancel = false;
+            var garbageCount = 0;
 
             for (int i = 1; i < stream.Length - 1; i++)
             {
@@ -51,15 +52,30 @@ namespace Solutions
                                 groups.Peek().Children.Add(newGroup);
                                 groups.Push(newGroup);
                             }
+                            else
+                            {
+                                garbageCount++;
+                            }
                             break;
                         case '}':
                             if (!inGarbage)
                             {
                                 groups.Pop();
                             }
+                            else
+                            {
+                                garbageCount++;
+                            }
                             break;
                         case '<':
-                            inGarbage = true;
+                            if (!inGarbage)
+                            {
+                                inGarbage = true;
+                            }
+                            else
+                            {
+                                garbageCount++;
+                            }
                             break;
                         case '>':
                             inGarbage = false;
@@ -68,6 +84,10 @@ namespace Solutions
                             inCancel = true;
                             break;
                         default:
+                            if (inGarbage)
+                            {
+                                garbageCount++;
+                            }
                             break;
                     }
                 }
@@ -78,7 +98,13 @@ namespace Solutions
 
             }
 
-            return rootGroup;
+            return (rootGroup,garbageCount);
+        }
+
+        public int CountGarbage(string stream)
+        {
+            var (_, result) = BuildGroups(stream);
+            return result;
         }
 
         public int ScoreGroups(string stream)
@@ -94,7 +120,7 @@ namespace Solutions
             }
 
 
-            var rootGroup = BuildGroups(stream);
+            var (rootGroup, _) = BuildGroups(stream);
             var result = DoWork(rootGroup, 1);
 
             return result;
@@ -103,7 +129,6 @@ namespace Solutions
         private class Group
         {
             public List<Group> Children { get; set; }
-            //    public int Score { get; set; }
 
             public Group()
             {
