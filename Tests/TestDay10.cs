@@ -10,7 +10,7 @@ namespace Tests
         public void Part1()
         {
             var day10 = new Day10();
-            var actual = day10.Solve(5, "3,4,1,5");
+            var actual = day10.SolvePart1(5, "3,4,1,5");
             Assert.Equal(12, actual);
         }
 
@@ -18,7 +18,7 @@ namespace Tests
         public void Part1_Answer()
         {
             var day10 = new Day10();
-            var actual = day10.Solve(256, PUZZLE_INPUT);
+            var actual = day10.SolvePart1(256, PUZZLE_INPUT);
             Assert.Equal(37230, actual);
         }
 
