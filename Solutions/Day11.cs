@@ -4,18 +4,19 @@ namespace Solutions
 {
     public class Day11
     {
-        private int Distance(int x, int y, int z)
-        {
-            return (Math.Abs(x - 0) + Math.Abs(y - 0) + Math.Abs(z - 0)) / 2;
-        }
+
         public (int distance, int max) Walk(string route)
         {
+            int Distance(int x1, int y1, int z1) =>
+                (Math.Abs(x1 - 0) + Math.Abs(y1 - 0) + Math.Abs(z1 - 0)) / 2;
+
             var steps = route.Split(',');
 
             var x = 0;
             var y = 0;
             var z = 0;
             var max = 0;
+            var distanceNow = 0;
 
             foreach (var step in steps)
             {
@@ -55,13 +56,11 @@ namespace Solutions
                         throw new System.Exception("Unknown step type " + step);
                 }
 
-                var distanceNow = Distance(x, y, z);
+                distanceNow = Distance(x, y, z);
                 max = Math.Max(max, distanceNow);
             }
 
-
-            return (Distance(x, y, z), max);
-
+            return (distanceNow, max);
         }
     }
 }
