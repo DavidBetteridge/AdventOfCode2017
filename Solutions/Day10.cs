@@ -37,13 +37,6 @@ namespace Solutions
             }
             Array.Copy(new byte[5] { 17, 31, 73, 47, 23 }, 0, finalInput, input.Length, 5);
 
-            //finalInput[input.Length] = 17;
-            //finalInput[input.Length + 1] = 31;
-            //finalInput[input.Length + 2] = 73;
-            //finalInput[input.Length + 3] = 47;
-            //finalInput[input.Length + 4] = 23;
-
-
             // Build a list with the elements 0... numberOfElements-1
             const int numberOfElements = 256;
             var list = BuildListOfNumbers(numberOfElements);
