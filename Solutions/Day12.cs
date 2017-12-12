@@ -1,11 +1,19 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace Solutions
 {
     public class Day12
     {
         public int CountConnections(string connections)
+        {
+            var nodes = Build(connections);
+            var rootNode = nodes["0"];
+            return Count(rootNode,1);
+        }
+
+        private static Dictionary<string, Node> Build(string connections)
         {
             var nodes = new Dictionary<string, Node>();
             var lines = connections.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -30,23 +38,37 @@ namespace Solutions
                         nodes.Add(childName, childNode);
                     }
 
-                    childNode.Parent = newNode;
                     newNode.Children.Add(childNode);
                 }
             }
 
-            var rootNode = nodes["0"];
-            return Count(rootNode);
+            return nodes;
         }
 
-        private int Count(Node rootNode)
+        public int CountGroups(string connections)
+        {
+            var nodes = Build(connections);
+            var groupNumber = 0;
+
+            var root = nodes.Values.FirstOrDefault(n => n.GroupNumber == 0);
+            while (root != null)
+            {
+                groupNumber++;
+                Count(root, groupNumber);
+                root = nodes.Values.FirstOrDefault(n => n.GroupNumber == 0);
+            }
+
+            return groupNumber;
+        }
+
+        private int Count(Node rootNode,int groupNumber)
         {
             var total = 1;
-            rootNode.Counted = true;
+            rootNode.GroupNumber = groupNumber;
 
-            foreach (var node in rootNode.Children.Where(n => !n.Counted))
+            foreach (var node in rootNode.Children.Where(n => n.GroupNumber==0))
             {
-                total += Count(node);
+                total += Count(node, groupNumber);
             }
 
             return total;
@@ -55,10 +77,9 @@ namespace Solutions
         private class Node
         {
             public string Name { get; }
-            public Node Parent { get; set; }
             public List<Node> Children { get; set; }
 
-            public bool Counted { get; set; }
+            public int GroupNumber { get; set; }
 
             public Node(string name)
             {
