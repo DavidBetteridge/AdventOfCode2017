@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -33,6 +34,83 @@ namespace Solutions
             return CalculateDenseHash(numberOfElements, list);
         }
 
+        public int CountRegions(string key)
+        {
+            var result = 0;
+            var cells = new int[128, 128];
+            for (int row = 0; row < 128; row++)
+            {
+                var hash = CalculateHash($"{key}-{row}");
+                var binary = HashToBinary(hash);
+
+                for (int column = 0; column < 128; column++)
+                {
+                    cells[column, row] = (binary[column] == '1' ? 0 : -1);
+                }
+            }
+
+            for (int row = 0; row < 128; row++)
+            {
+                for (int column = 0; column < 128; column++)
+                {
+            //        Print(cells);
+                    if (cells[column, row] == 0)
+                    {
+                        result++;
+                        cells[column, row] = result;
+
+                        //Look Right
+                        if (column < 127)
+                            ClearIfSet(cells, column + 1, row, result);
+
+                        //Look Down
+                        if (row < 127)
+                            ClearIfSet(cells, column, row + 1, result);
+                    }
+
+                }
+            }
+
+
+            return result;
+        }
+
+        private void Print(int[,] cells)
+        {
+            for (int row = 0; row < 128; row++)
+            {
+                var r = "";
+                for (int column = 0; column < 128; column++)
+                {
+                    if (cells[column, row] == -1)
+                    {
+                        r += ".";
+                    }
+                    else if (cells[column, row] == 0)
+                    {
+                        r += "#";
+                    }
+                    else
+                    {
+                        r += cells[column, row];
+                    }
+                }
+                Debug.WriteLine(r);
+            }
+        }
+
+        private void ClearIfSet(int[,] cells, int x, int y, int groupNumber)
+        {
+            if (cells[x, y] == 0)
+            {
+                cells[x, y] = groupNumber;
+                if (x > 0) ClearIfSet(cells, x - 1, y, groupNumber);
+                if (x < 127) ClearIfSet(cells, x + 1, y, groupNumber);
+                if (y > 0) ClearIfSet(cells, x, y - 1, groupNumber);
+                if (y < 127) ClearIfSet(cells, x, y + 1, groupNumber);
+            }
+        }
+
         public int CountUsedSquares(string key)
         {
             var result = 0;
@@ -40,7 +118,7 @@ namespace Solutions
             {
                 var hash = CalculateHash($"{key}-{row}");
                 var binary = HashToBinary(hash);
-                result+= binary.Replace("0", "").Length;
+                result += binary.Replace("0", "").Length;
             }
             return result;
         }

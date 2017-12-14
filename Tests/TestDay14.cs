@@ -29,7 +29,6 @@ namespace Tests
             var day14 = new Day14();
             var actual = day14.CountUsedSquares("flqrgnkx");
             Assert.Equal(8108, actual);
-
         }
 
         [Fact]
@@ -38,7 +37,22 @@ namespace Tests
             var day14 = new Day14();
             var actual = day14.CountUsedSquares("jzgqcdpd");
             Assert.Equal(8074, actual);
+        }
 
+        [Fact]
+        public void Part2()
+        {
+            var day14 = new Day14();
+            var actual = day14.CountRegions("flqrgnkx");
+            Assert.Equal(1242, actual);
+        }
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day14 = new Day14();
+            var actual = day14.CountRegions("jzgqcdpd");
+            Assert.Equal(1212, actual);
         }
     }
 }
