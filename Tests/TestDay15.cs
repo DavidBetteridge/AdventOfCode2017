@@ -23,8 +23,8 @@ namespace Tests
         public void Get5th()
         {
             var day15 = new Day15();
-            var actual = day15.GeneratorA(65).Take(5).Last();
-            Assert.Equal(1352636452, actual);
+            var actual = day15.GeneratorA(65).Where(a => a % 4 == 0).Take(5).Last();
+            Assert.Equal(740335192, actual);
         }
 
         [Theory]
@@ -51,7 +51,23 @@ namespace Tests
         {
             var day15 = new Day15();
             var actual = day15.CountMatches(591, 393);
-            Assert.Equal(588, actual);
+            Assert.Equal(619, actual);
+        }
+
+        [Fact]
+        public void Part2()
+        {
+            var day15 = new Day15();
+            var actual = day15.CountMatches2(65, 8921);
+            Assert.Equal(309, actual);
+        }
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day15 = new Day15();
+            var actual = day15.CountMatches2(591, 393);
+            Assert.Equal(290, actual);
         }
     }
 }
