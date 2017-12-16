@@ -5,10 +5,7 @@ namespace Solutions
 {
     public class Day15
     {
-        public long NextValue(long previous, long factor)
-        {
-            return (previous * factor) % 2147483647;
-        }
+        public long NextValue(long previous, long factor) => (previous * factor) % 2147483647;
 
         public IEnumerable<long> GeneratorA(long initial)
         {
