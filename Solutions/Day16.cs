@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Solutions
 {
@@ -16,14 +17,18 @@ namespace Solutions
             return result;
         }
 
-        public char[] Exchange(char[] programs, int A, int B)
+        public char[] Copy(char[] programs)
         {
-            var temp = programs[A];
-            programs[A] = programs[B];
-            programs[B] = temp;
+            var result = new char[programs.Length];
 
-            return programs;
+            for (int i = 0; i < programs.Length; i++)
+            {
+                result[i] = programs[i];
+            }
+
+            return result;
         }
+
 
         public char[] Partner(char[] programs, char A, char B)
         {
@@ -38,28 +43,81 @@ namespace Solutions
             return programs;
         }
 
-        public char[] Dance(char[] programs, string moves)
+        private List<Func<char[], char[]>> BuildMoves(char[] programs, string moves)
         {
+            Func<char[], char[]> BuildExchange(int A, int B) => (a => Exchange(a, A, B));
+            Func<char[], char[]> BuildPartner(char A, char B) => (a => Partner(a, A, B));
+            Func<char[], char[]> BuildSpin(int X) => (a => Spin(a, X));
+
+            var results = new List<Func<char[], char[]>>();
             var commands = moves.Split(',');
             foreach (var command in commands)
             {
                 if (command.StartsWith("x"))
                 {
                     var parms = command.Substring(1).Split('/');
-                    programs = Exchange(programs, int.Parse(parms[0]), int.Parse(parms[1]));
+                    results.Add(BuildExchange(int.Parse(parms[0]), int.Parse(parms[1])));
                 }
                 else if (command.StartsWith("p"))
                 {
                     var parms = command.Substring(1).Split('/');
-                    programs = Partner(programs, parms[0][0], parms[1][0]);
+                    results.Add(BuildPartner(parms[0][0], parms[1][0]));
                 }
                 else if (command.StartsWith("s"))
                 {
-                    programs = Spin(programs, int.Parse(command.Substring(1)));
+                    results.Add(BuildSpin(int.Parse(command.Substring(1))));
                 }
                 else
                 {
                     throw new Exception("Unknown command");
+                }
+            }
+
+            return results;
+        }
+
+
+
+        public char[] Exchange(char[] programs, int A, int B)
+        {
+            var temp = programs[A];
+            programs[A] = programs[B];
+            programs[B] = temp;
+
+            return programs;
+        }
+
+        public char[] Dance(char[] programs, string moves, int rounds)
+        {
+            var commands = BuildMoves(programs, moves);
+            var repeatsAfter = 0;
+            var original = Copy(programs);
+            for (int i = 0; i < rounds; i++)
+            {
+                foreach (var command in commands)
+                {
+                    programs = command(programs);
+                }
+
+                if (string.Join("", programs) == "abcdefghijklmnop")
+                {
+                    repeatsAfter = i;
+                    break;
+                }
+            }
+
+            if (repeatsAfter > 0)
+            {
+                programs = original;
+                var complete = Math.Floor((double)rounds / (repeatsAfter + 1));
+                var leftOver = rounds - (complete * (repeatsAfter + 1));
+
+                for (int i = 0; i < leftOver; i++)
+                {
+                    foreach (var command in commands)
+                    {
+                        programs = command(programs);
+                    }
                 }
             }
 
