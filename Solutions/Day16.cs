@@ -45,10 +45,6 @@ namespace Solutions
 
         private List<Func<char[], char[]>> BuildMoves(char[] programs, string moves)
         {
-            Func<char[], char[]> BuildExchange(int A, int B) => (a => Exchange(a, A, B));
-            Func<char[], char[]> BuildPartner(char A, char B) => (a => Partner(a, A, B));
-            Func<char[], char[]> BuildSpin(int X) => (a => Spin(a, X));
-
             var results = new List<Func<char[], char[]>>();
             var commands = moves.Split(',');
             foreach (var command in commands)
@@ -56,16 +52,16 @@ namespace Solutions
                 if (command.StartsWith("x"))
                 {
                     var parms = command.Substring(1).Split('/');
-                    results.Add(BuildExchange(int.Parse(parms[0]), int.Parse(parms[1])));
+                    results.Add((a => Exchange(a, int.Parse(parms[0]), int.Parse(parms[1]))));
                 }
                 else if (command.StartsWith("p"))
                 {
                     var parms = command.Substring(1).Split('/');
-                    results.Add(BuildPartner(parms[0][0], parms[1][0]));
+                    results.Add((a => Partner(a, parms[0][0], parms[1][0])));
                 }
                 else if (command.StartsWith("s"))
                 {
-                    results.Add(BuildSpin(int.Parse(command.Substring(1))));
+                    results.Add((a => Spin(a, int.Parse(command.Substring(1)))));
                 }
                 else
                 {
