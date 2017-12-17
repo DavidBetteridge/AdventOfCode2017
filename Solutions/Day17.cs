@@ -21,7 +21,7 @@ namespace Solutions
             return (initialState, location + 1);
         }
 
-        public int Part1(int numberOfSteps)
+        public int Part1X(int numberOfSteps)
         {
             var root = new Node() { Value = 0 };
             root.NextNode = root;
@@ -46,32 +46,37 @@ namespace Solutions
             return current.NextNode.Value;
         }
 
+        public int Part1(int numberOfSteps)
+        {
+            var state = new List<int>() { 0 };
+            var position = 0;
+
+            for (int nextValue = 1; nextValue <= 2017; nextValue++)
+            {
+                (state, position) = Spin(state, position, numberOfSteps, nextValue);
+            }
+
+            return state[(position + 1) % state.Count];
+        }
+
         public int Part2(int numberOfSteps)
         {
 
-            var root = new Node() { Value = 0 };
-            root.NextNode = root;
-
-            var current = root;
-            var next = 1;
-            for (int nextValue = 1; nextValue <= 50000000; nextValue++)
+            var position = 0;
+            var lastNumber = 0;
+            for (int nextNumber = 1; nextNumber < 50000000; nextNumber++)
             {
-                for (int i = 1; i <= numberOfSteps; i++)
+                position = (position + numberOfSteps) % nextNumber;
+
+                if (position == 0)
                 {
-                    current = current.NextNode;
+                    Debug.WriteLine(nextNumber);
+                    
+                    lastNumber = nextNumber;
                 }
-
-                Debug.WriteLineIf(current.Value == 0, nextValue);
-
-                var newNode = new Node() { Value = next };
-                newNode.NextNode = current.NextNode;
-                current.NextNode = newNode;
-
-                current = newNode;
-                next++;
+                position++;
             }
-
-            return root.NextNode.Value;
+            return lastNumber;
         }
     }
 }

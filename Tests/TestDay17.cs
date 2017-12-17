@@ -54,7 +54,7 @@ namespace Tests
         {
             var day17 = new Day17();
             var actual = day17.Part2(329);
-            Assert.Equal(725, actual);
+            Assert.Equal(27361412, actual);
         }
     }
 }
