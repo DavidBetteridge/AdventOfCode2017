@@ -41,7 +41,7 @@ namespace Solutions
         {
             var position = 0;
             var lastNumber = 0;
-            for (int nextNumber = 1; nextNumber < 50000000; nextNumber++)
+            for (int nextNumber = 1; nextNumber <= 50000000; nextNumber++)
             {
                 position = (position + numberOfSteps) % nextNumber;
 
