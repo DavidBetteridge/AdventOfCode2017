@@ -1,123 +1,125 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Solutions
 {
     public class Day18
     {
+        class State
+        {
+            public long NumberOfOperations;
+            public long NumberSent;
+        }
 
         public long Solve2(string input)
         {
             var commands = input.Split(new[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-            var registers0 = new Dictionary<char, long>();
-            var registers1 = new Dictionary<char, long>();
+            var queueFrom0To1 = new BlockingCollection<long>(new ConcurrentQueue<long>());
+            var queueFrom1To0 = new BlockingCollection<long>(new ConcurrentQueue<long>());
 
-            var programCounter0 = 0L;
-            var programCounter1 = 0L;
+            var state0 = new State();
+            var state1 = new State();
 
-            SetValue('p', registers0, 0);
-            SetValue('p', registers1, 1);
+            var task0 = Task.Run(() => RunUntilHalted(0, commands, queueFrom0To1, queueFrom1To0, state0));
+            var task1 = Task.Run(() => RunUntilHalted(1, commands, queueFrom1To0, queueFrom0To1, state1));
 
-            var queueFrom0 = new Queue<long>();
-            var queueFrom1 = new Queue<long>();
+            var monitor = Task.Run(() => DetectDeadlock(state0, state1));
 
-            var workDone0 = true;
-            var workDone1 = true;
+            Task.WaitAny(new[] { task0, task1, monitor });
 
-            var numberSent1To0 = 0;
-
-            while (workDone0 || workDone1)
-            {
-                var temp = 0;
-                (programCounter0, workDone0, _) = RunUntilHalted(registers0, programCounter0, commands, queueFrom0, queueFrom1);
-                (programCounter1, workDone1, temp) = RunUntilHalted(registers1, programCounter1, commands, queueFrom1, queueFrom0);
-                numberSent1To0 += temp;
-            }
-
-            return numberSent1To0;
-
+            return state1.NumberSent;
         }
 
-        private (long pc, bool workdone, int numberSent) RunUntilHalted(Dictionary<char, long> registers,
-                                    long programCounter,
-                                    string[] commands,
-                                    Queue<long> readFrom,
-                                    Queue<long> sendTo)
+        private async Task DetectDeadlock(State state0, State state1)
         {
-            var workDone = false;
-            var numberSent = 0;
+            var s0 = Interlocked.Read(ref state0.NumberOfOperations);
+            var s1 = Interlocked.Read(ref state1.NumberOfOperations);
+            while (true)
+            {
+                var temp_s0 = Interlocked.Read(ref state0.NumberOfOperations);
+                var temp_s1 = Interlocked.Read(ref state1.NumberOfOperations);
+
+                if (temp_s0 == s0 && temp_s1 == s1)
+                {
+                    return;
+                }
+
+                await Task.Delay(10);
+            }
+        }
+
+        private Task RunUntilHalted(long p,
+                                          string[] commands,
+                                          BlockingCollection<long> readFrom,
+                                          BlockingCollection<long> sendTo,
+                                          State state)
+        {
+            var registers = new Dictionary<char, long>();
+            SetValue('p', registers, p);
+            var programCounter = 0L;
+
+
             while (true)
             {
                 if (programCounter >= commands.Length)
                 {
                     // No more commands
-                    return (programCounter, workDone, numberSent);
+                    return Task.FromResult(0);
                 }
 
                 var command = commands[programCounter];
 
                 var parts = command.Split(' ');
-                var lhs = 0L;
+                var lhs = ReadValue(registers, parts[1]);
                 var rhs = 0L;
+
+                Interlocked.Increment(ref state.NumberOfOperations);
+
                 switch (parts[0])
                 {
                     case "add":
-                        lhs = ReadValue(registers, parts[1]);
                         rhs = ReadValue(registers, parts[2]);
                         SetValue(parts[1][0], registers, lhs + rhs);
                         programCounter++;
-                        workDone = true;
                         break;
 
                     case "set":
                         rhs = ReadValue(registers, parts[2]);
                         SetValue(parts[1][0], registers, rhs);
                         programCounter++;
-                        workDone = true;
 
                         break;
 
                     case "mul":
-                        lhs = ReadValue(registers, parts[1]);
                         rhs = ReadValue(registers, parts[2]);
                         SetValue(parts[1][0], registers, lhs * rhs);
                         programCounter++;
-                        workDone = true;
                         break;
 
                     case "mod":
-                        lhs = ReadValue(registers, parts[1]);
                         rhs = ReadValue(registers, parts[2]);
                         SetValue(parts[1][0], registers, lhs % rhs);
                         programCounter++;
-                        workDone = true;
                         break;
 
                     case "snd":
-                        sendTo.Enqueue(ReadValue(registers, parts[1]));
+                        sendTo.TryAdd(ReadValue(registers, parts[1]));
                         programCounter++;
-                        workDone = true;
-                        numberSent++;
+                        Interlocked.Increment(ref state.NumberSent);
                         break;
 
                     case "rcv":
-                        if (readFrom.Count > 0)
-                        {
-                            SetValue(parts[1][0], registers, readFrom.Dequeue());
-                            programCounter++;
-                            workDone = true;
-                        }
-                        else
-                        {
-                            // Nothing on the queue - we need to context switch
-                            return (programCounter, workDone, numberSent);
-                        }
+                        readFrom.TryTake(out var l, Timeout.Infinite);
+                        SetValue(parts[1][0], registers, l);
+                        programCounter++;
                         break;
 
                     case "jgz":
-                        lhs = ReadValue(registers, parts[1]);
                         rhs = ReadValue(registers, parts[2]);
                         if (lhs > 0)
                         {
@@ -127,7 +129,6 @@ namespace Solutions
                         {
                             programCounter++;
                         }
-                        workDone = true;
                         break;
 
                     default:
