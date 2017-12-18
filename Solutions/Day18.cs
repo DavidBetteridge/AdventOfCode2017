@@ -49,6 +49,9 @@ namespace Solutions
                     return;
                 }
 
+                s0 = temp_s0;
+                s1 = temp_s1;
+
                 await Task.Delay(10);
             }
         }
