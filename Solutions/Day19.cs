@@ -6,7 +6,7 @@ namespace Solutions
 {
     public class Day19
     {
-        public string Walk(string diagram)
+        public (int steps, string word) Walk(string diagram)
         {
             var lines = diagram.Split(new[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -14,7 +14,8 @@ namespace Solutions
             var currentY = 0;
             var currentX = lines[0].IndexOf('|');
 
-            var result = "";
+            var word = "";
+            var steps = 1;
             var direction = Direction.South;
 
             while (true)
@@ -47,6 +48,7 @@ namespace Solutions
                     case '|':
                     case '-':
                         //Keep going
+                        steps++;
                         break;
                     case '+':
                         //Change direction
@@ -66,11 +68,13 @@ namespace Solutions
                             else
                                 direction = Direction.East;
                         }
+                        steps++;
                         break;
                     case ' ':
                         break;
                     default:
-                        result += newChar;
+                        steps++;
+                        word += newChar;
                         break;
                 }
 
@@ -79,7 +83,7 @@ namespace Solutions
             }
 
 
-            return result;
+            return (steps,word);
         }
 
         enum Direction
