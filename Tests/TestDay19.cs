@@ -46,7 +46,7 @@ namespace Tests
         {
             var day19 = new Day19();
             var (steps, _) = day19.Walk(PUZZLE_INPUT);
-            Assert.Equal(0, steps);
+            Assert.Equal(16734, steps);
         }
 
         private const string PUZZLE_INPUT = @"                                                           |                                                                                                                                             
