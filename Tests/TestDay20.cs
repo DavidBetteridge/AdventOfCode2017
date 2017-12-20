@@ -25,8 +25,17 @@ p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>";
         {
             var day20 = new Day20();
             var actual = day20.FindClosest(PUZZLE_INPUT);
-            Assert.Equal(0, actual);
+            Assert.Equal(308, actual);
         }
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day20 = new Day20();
+            var actual = day20.FindRemaining(PUZZLE_INPUT);
+            Assert.Equal(504, actual);
+        }
+
 
         private const string PUZZLE_INPUT = @"p=<-4897,3080,2133>, v=<-58,-15,-78>, a=<17,-7,0>
 p=<395,-997,4914>, v=<-30,66,-69>, a=<1,-2,-8>
