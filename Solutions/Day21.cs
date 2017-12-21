@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
+using System.Text;
 
 namespace Solutions
 {
@@ -56,11 +56,7 @@ namespace Solutions
             var h2 = RotateClockwise(h1);
             var h3 = RotateClockwise(h2);
             var h4 = RotateClockwise(h3);
-            var v1 = VFlip(patternArray);
-            var v2 = RotateClockwise(v1);
-            var v3 = RotateClockwise(v2);
-            var v4 = RotateClockwise(v3);
-            return new List<string>() { pattern, ArrayToString(r1), ArrayToString(r2), ArrayToString(r3), ArrayToString(h1), ArrayToString(h2), ArrayToString(h3), ArrayToString(h4), ArrayToString(v1), ArrayToString(v2), ArrayToString(v3), ArrayToString(v4) };
+            return new List<string>() { pattern, ArrayToString(r1), ArrayToString(r2), ArrayToString(r3), ArrayToString(h1), ArrayToString(h2), ArrayToString(h3), ArrayToString(h4) };
 
         }
 
@@ -80,6 +76,8 @@ namespace Solutions
                         throw new Exception("Unknown pattern " + a);
                 });
                 asArray = RejoinInput(updated);
+
+                display(ArrayToString(asArray));
             }
 
             var result = 0L;
@@ -97,6 +95,7 @@ namespace Solutions
 
         private void display(string input)
         {
+            Debug.WriteLine("");
             Debug.WriteLine(input.Replace("/", System.Environment.NewLine));
         }
 
@@ -117,7 +116,7 @@ namespace Solutions
                 {
                     for (int row = 0; row < size; row++)
                     {
-                        final[column + (blockX * size), row + (blockY * size)] = asArray[column, row];
+                        final[column + (blockY * size), row + (blockX * size)] = asArray[column, row];
                     }
                 }
 
@@ -128,6 +127,9 @@ namespace Solutions
                     blockY++;
                 }
             }
+
+            Debug.Assert(blockX == 0);
+            Debug.Assert(blockY == numberPerSide);
 
             return final;
         }
@@ -210,17 +212,18 @@ namespace Solutions
 
         public string ArrayToString(bool[,] pattern)
         {
-            var s = "";
+            var s = new StringBuilder();
             for (int row = 0; row <= pattern.GetUpperBound(0); row++)
             {
-                if (s != "") s += "/";
+                if (row > 0) s.Append("/");
                 for (int column = 0; column <= pattern.GetUpperBound(1); column++)
                 {
-                    s += pattern[column, row] ? "#" : ".";
+                    s.Append(pattern[column, row] ? "#" : ".");
                 }
             }
-            return s;
+            return s.ToString();
         }
+
         public bool[,] StringToArray(string pattern)
         {
             var lines = pattern.Split('/');

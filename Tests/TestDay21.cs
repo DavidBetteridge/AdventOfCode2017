@@ -34,7 +34,7 @@ namespace Tests
         {
             var day21 = new Day21();
             var actual = day21.ExpandPattern(@".#./..#/###");
-            Assert.Equal(12, actual.Count);
+            Assert.Equal(8, actual.Count);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Tests
             var day21 = new Day21();
             var input = ".#./..#/###";
             var actual = day21.Part1(input, PUZZLE_INPUT, 18);
-            Assert.Equal(2632717, actual);
+            Assert.Equal(2480380, actual);
         }
 
         private const string PUZZLE_INPUT = @"../.. => ###/###/.##
