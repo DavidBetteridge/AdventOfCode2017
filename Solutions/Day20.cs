@@ -95,7 +95,6 @@ namespace Solutions
                         hashes.Add(hash, particle);
                     }
                 }
-
             }
 
             return numberAlive;
