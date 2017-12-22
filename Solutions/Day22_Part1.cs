@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Solutions
 {
-    public class Day22
+    public class Day22_Part1
     {
         private string Key(int x, int y) => $"{x},{y}";
 
