@@ -5,7 +5,6 @@ namespace Solutions
 {
     public class Day22_Part2
     {
-        private string Key(int x, int y) => $"{x},{y}";
 
         public enum Direction
         {
@@ -23,10 +22,10 @@ namespace Solutions
             Flagged = 3
         }
 
-        public Dictionary<string, State> LoadMap(string input)
+        public Dictionary<(int, int), State> LoadMap(string input)
         {
             var rows = input.Split(new[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            var result = new Dictionary<string, State>();
+            var result = new Dictionary<(int, int), State>(5000);
 
             for (int y = 0; y < rows.Length; y++)
             {
@@ -35,14 +34,18 @@ namespace Solutions
                 {
                     if (row[x] == '#')
                     {
-                        result.Add(Key(x - (row.Length / 2), y - (rows.Length / 2)), State.Infected);
+                        result.Add((x - (row.Length / 2), y - (rows.Length / 2)), State.Infected);
+                    }
+                    else
+                    {
+                        result.Add((x - (row.Length / 2), y - (rows.Length / 2)), State.Clean);
                     }
                 }
             }
-            return result;
+            return (result);
         }
 
-        public int Part2(Dictionary<string, State> map, int numberOfBursts)
+        public int Part2(Dictionary<(int, int), State> map, int numberOfBursts)
         {
             var direction = Direction.North;
             var x = 0;
@@ -50,49 +53,53 @@ namespace Solutions
             var result = 0;
             for (int burst = 0; burst < numberOfBursts; burst++)
             {
-                var infected = false;
-                (direction, x, y, infected) = Burst(map, direction, x, y);
-                if (infected) result++;
+                var currentState = State.Clean;
+                map.TryGetValue((x, y), out currentState);
+
+
+                switch (currentState)
+                {
+                    case State.Clean:
+                        direction = TurnLeft(direction);
+                        map[(x, y)] = State.Weakened;
+                        break;
+                    case State.Weakened:
+                        map[(x, y)] = State.Infected;
+                        result++;
+                        break;
+                    case State.Infected:
+                        direction = TurnRight(direction);
+                        map[(x, y)] = State.Flagged;
+                        break;
+                    case State.Flagged:
+                        direction = TurnAround(direction);
+                        map[(x, y)] = State.Clean;
+                        break;
+                    default:
+                        throw new Exception("");
+                }
+
+                switch (direction)
+                {
+                    case Direction.North:
+                        y--;
+                        break;
+                    case Direction.South:
+                        y++;
+                        break;
+                    case Direction.East:
+                        x++;
+                        break;
+                    case Direction.West:
+                        x--;
+                        break;
+                    default:
+                        throw new Exception("");
+                }
+
             }
             return result;
 
-        }
-
-        public (Direction Direction, int X, int Y, bool infected) Burst(Dictionary<string, State> map, Direction currentDirection, int currentX, int currentY)
-        {
-            var currentKey = Key(currentX, currentY);
-            Direction newDirection;
-            var infected = false;
-
-            var currentState = State.Clean;
-            map.TryGetValue(currentKey, out currentState);
-
-            switch (currentState)
-            {
-                case State.Clean:
-                    newDirection = TurnLeft(currentDirection);
-                    map.Add(currentKey, State.Weakened);
-                    break;
-                case State.Weakened:
-                    newDirection = currentDirection;
-                    map[currentKey] = State.Infected;
-                    infected = true;
-                    break;
-                case State.Infected:
-                    newDirection = TurnRight(currentDirection);
-                    map[currentKey] = State.Flagged;
-                    break;
-                case State.Flagged:
-                    newDirection = TurnAround(currentDirection);
-                    map.Remove(currentKey);
-                    break;
-                default:
-                    throw new Exception("");
-            }
-
-            var (newX, newY) = MoveForward(currentX, currentY, newDirection);
-
-            return (newDirection, newX, newY, infected);
         }
 
         private Direction TurnAround(Direction currentDirection)
@@ -107,23 +114,6 @@ namespace Solutions
                     return Direction.West;
                 case Direction.West:
                     return Direction.East;
-                default:
-                    throw new Exception("");
-            }
-        }
-
-        private (int X, int Y) MoveForward(int X, int Y, Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.North:
-                    return (X, Y - 1);
-                case Direction.South:
-                    return (X, Y + 1);
-                case Direction.East:
-                    return (X + 1, Y);
-                case Direction.West:
-                    return (X - 1, Y);
                 default:
                     throw new Exception("");
             }
