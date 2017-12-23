@@ -9,7 +9,7 @@ namespace Tests
         public void Part1_Answer()
         {
             var day23 = new Day23();
-            var (actual,_) = day23.Solve(PUZZLE_INPUT, 0);
+            var actual = day23.Solve_Part1(PUZZLE_INPUT);
             Assert.Equal(5929, actual);
         }
 
@@ -18,8 +18,8 @@ namespace Tests
         public void Part2_Answer()
         {
             var day23 = new Day23();
-            var (_, actualH) = day23.Solve(PUZZLE_INPUT, 1);
-            Assert.Equal(1, actualH);
+            var actualH = day23.Solve_Part2(PUZZLE_INPUT);
+            Assert.Equal(907, actualH);
         }
 
         private const string PUZZLE_INPUT = @"set b 79
@@ -32,7 +32,7 @@ set c b
 sub c -17000
 set f 1
 set d 2
-set e 2
+set e 53950
 set g d
 mul g e
 sub g b
