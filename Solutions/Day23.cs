@@ -5,15 +5,16 @@ namespace Solutions
 {
     public class Day23
     {
-        public int SolvePart1(string input)
+        public (int numberOfMultiplys, long h) Solve(string input, int initialValueForA)
         {
             var commands = input.Split(new[] { System.Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             var registers = new Dictionary<char, long>();
             var result = 0;
             var programCounter = 0L;
+            SetValue('a', registers, initialValueForA);
             while (true)
             {
-                if (programCounter == commands.Length) return result;
+                if (programCounter == commands.Length) return (result, ReadValue(registers, "h"));
 
                 var command = commands[programCounter];
 

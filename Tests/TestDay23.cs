@@ -9,8 +9,17 @@ namespace Tests
         public void Part1_Answer()
         {
             var day23 = new Day23();
-            var actual = day23.SolvePart1(PUZZLE_INPUT);
-            Assert.Equal(1, actual);
+            var (actual,_) = day23.Solve(PUZZLE_INPUT, 0);
+            Assert.Equal(5929, actual);
+        }
+
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day23 = new Day23();
+            var (_, actualH) = day23.Solve(PUZZLE_INPUT, 1);
+            Assert.Equal(1, actualH);
         }
 
         private const string PUZZLE_INPUT = @"set b 79
