@@ -31,6 +31,32 @@ namespace Tests
             Assert.Equal(1868, actual);
         }
 
+
+        [Fact]
+        public void Part2()
+        {
+            var day24 = new Day24();
+            var actual = day24.SolvePart2(@"0/2
+2/2
+2/3
+3/4
+3/5
+0/1
+10/1
+9/10");
+            Assert.Equal(19, actual);
+        }
+
+
+        [Fact]
+        public void Part2_Answer()
+        {
+            var day24 = new Day24();
+            var actual = day24.SolvePart2(PUZZLE_INPUT);
+            Assert.Equal(1841, actual);
+        }
+
+
         private const string PUZZLE_INPUT = @"25/13
 4/43
 42/42
