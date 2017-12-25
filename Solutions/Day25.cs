@@ -1,4 +1,5 @@
-﻿namespace Solutions
+﻿using System.Linq;
+namespace Solutions
 {
     public class Day25
     {
@@ -118,13 +119,7 @@
                 }
             }
 
-            var result = 0;
-            for (int step = 0; step < NUMBER_OF_STEPS; step++)
-            {
-                if (tape[step]) result++;
-            }
-
-            return result;
+            return tape.Count(symbol => symbol);
         }
     }
 }
